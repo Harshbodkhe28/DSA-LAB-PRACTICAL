@@ -1,0 +1,74 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class HeapSorter {
+private:
+    int N;  // Heap size
+
+    void swap(vector<int>& arr, int i, int j) {
+        int tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+    }
+
+    void heapify(vector<int>& arr, int i) {
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
+        int max = i;
+
+        if (left <= N && arr[left] > arr[max]) {
+            max = left;
+        }
+
+        if (right <= N && arr[right] > arr[max]) {
+            max = right;
+        }
+
+        if (max != i) {
+            swap(arr, i, max);
+            heapify(arr, max);
+        }
+    }
+
+    void buildHeap(vector<int>& arr) {
+        N = arr.size() - 1;
+        for (int i = N / 2; i >= 0; i--) {
+            heapify(arr, i);
+        }
+    }
+
+public:
+    void sort(vector<int>& arr) {
+        buildHeap(arr);
+        for (int i = N; i > 0; i--) {
+            swap(arr, 0, i);
+            N = N - 1;
+            heapify(arr, 0);
+        }
+    }
+};
+
+int main() {
+    int n;
+    cout << "Enter the number of elements to be sorted: ";
+    cin >> n;
+
+    vector<int> arr(n);
+    cout << "Enter " << n << " integer elements:" << endl;
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    HeapSorter sorter;
+    sorter.sort(arr);
+
+    cout << "After sorting:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+
+    return 0;
+}

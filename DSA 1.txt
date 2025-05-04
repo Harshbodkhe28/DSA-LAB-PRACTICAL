@@ -1,0 +1,159 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+#define size 13
+
+class linear_probing {
+    int hash[size], flag[size];
+
+public:
+    linear_probing() {
+        for (int i = 0; i < size; i++) {
+            flag[i] = 0;
+            hash[i] = -1;  // Optional: indicates empty slot
+        }
+    }
+
+    void insert(int x) {
+        int loc = x % size;
+        bool inserted = false;
+
+        for (int i = 0; i < size; i++) {
+            if (flag[loc] == 0) {
+                hash[loc] = x;
+                flag[loc] = 1;
+                inserted = true;
+                break;
+            } else {
+                loc = (loc + 1) % size;
+            }
+        }
+
+        if (!inserted) {
+            cout << "Hash table is full. Cannot insert " << x << endl;
+        }
+    }
+
+    void create() {
+        int x, n;
+        cout << "\nEnter the number of phone numbers to be inserted: ";
+        cin >> n;
+        cout << "Enter the phone numbers to insert into the hash table:\n";
+        for (int i = 0; i < n; i++) {
+            cin >> x;
+            insert(x);
+        }
+    }
+
+    int find(int x) {
+        int loc = x % size;
+        for (int i = 0; i < size; i++) {
+            if (flag[loc] == 0) {
+                return -1; // Element not found and no more to search
+            }
+            if (hash[loc] == x) {
+                return loc;
+            }
+            loc = (loc + 1) % size;
+        }
+        return -1;
+    }
+
+    void search() {
+        int x, loc;
+        cout << "\nEnter the phone number to be searched: ";
+        cin >> x;
+        loc = find(x);
+        if (loc == -1) {
+            cout << "Phone number not found.\n";
+        } else {
+            cout << "Phone number " << x << " found at location " << loc << ".\n";
+        }
+    }
+
+    void print() {
+        cout << "\nHash Table (Linear Probing):\n";
+        for (int i = 0; i < size; i++) {
+            cout << "(" << i << ") -> ";
+            if (flag[i] == 1) {
+                cout << hash[i] << "\n";
+            } else {
+                cout << "----\n";
+            }
+        }
+    }
+};
+
+struct node {
+    int phone;
+    node* next;
+};
+
+class Chaining {
+    node* hash[size];
+
+public:
+    Chaining() {
+        for (int i = 0; i < size; i++)
+            hash[i] = NULL;
+    }
+
+    void create() {
+        int x, n;
+        cout << "\nEnter the number of phone numbers to be inserted: ";
+        cin >> n;
+        cout << "Enter the phone numbers to insert into the hash table:\n";
+        for (int i = 0; i < n; i++) {
+            cin >> x;
+            insert(x);
+        }
+    }
+
+    void insert(int key) {
+        int loc = key % size;
+        node* p = new node;
+        p->phone = key;
+        p->next = NULL;
+
+        if (hash[loc] == NULL) {
+            hash[loc] = p;
+        } else {
+            node* q = hash[loc];
+            while (q->next != NULL) {
+                q = q->next;
+            }
+            q->next = p;
+        }
+    }
+
+    void display() {
+        cout << "\nHash Table (Chaining):\n";
+        for (int i = 0; i < size; i++) {
+            cout << "(" << i << ") -> ";
+            node* q = hash[i];
+            while (q) {
+                cout << q->phone;
+                if (q->next)
+                    cout << " -> ";
+                q = q->next;
+            }
+            cout << "\n";
+        }
+    }
+};
+
+int main() {
+    cout << "----------------- Linear Probing -----------------\n";
+    linear_probing lp;
+    lp.create();
+    lp.print();
+    lp.search();
+
+    cout << "\n----------------- Separate Chaining -----------------\n";
+    Chaining h;
+    h.create();
+    h.display();
+
+    return 0;
+}
